@@ -1,0 +1,43 @@
+diff -up VirtualGL-2.3.1/server/vglrun.redhatpathsfix VirtualGL-2.3.1/server/vglrun
+--- VirtualGL-2.3.1/server/vglrun.redhatpathsfix	2012-07-07 17:08:45.873195299 -0400
++++ VirtualGL-2.3.1/server/vglrun	2012-07-07 17:14:45.039183696 -0400
+@@ -281,16 +281,35 @@ exec ${1+"$@"}
+ 
+ *)
+ 
++if [ `uname -i` != "x86_64" ]; then
++
++          # We must be running on a 32 bit system.
++if [ -z "$LD_PRELOAD" ]; then
++        LD_PRELOAD=/usr/lib/VirtualGL/librrfaker.so
++else
++    	LD_PRELOAD=/usr/lib/VirtualGL/librrfaker.so:$LD_PRELOAD
++fi
++if [ $__VGL_DL -eq 1 ]; then
++        LD_PRELOAD=/usr/lib/VirtualGL/libdlfaker.so:$LD_PRELOAD
++fi
++if [ $__VGL_GE -eq 1 ]; then
++        LD_PRELOAD=/usr/lib/VirtualGL/libgefaker.so:$LD_PRELOAD
++fi
++
++else
++
++       # Ok, 64 bit system it is then...
+ if [ -z "$LD_PRELOAD" ]; then
+-	LD_PRELOAD=librrfaker.so
++	LD_PRELOAD=/usr/lib64/VirtualGL/librrfaker.so
+ else
+-	LD_PRELOAD=librrfaker.so:$LD_PRELOAD
++	LD_PRELOAD=/usr/lib64/VirtualGL/librrfaker.so:$LD_PRELOAD
+ fi
+ if [ $__VGL_DL -eq 1 ]; then
+-	LD_PRELOAD=libdlfaker.so:$LD_PRELOAD
++	LD_PRELOAD=/usr/lib64/VirtualGL/libdlfaker.so:$LD_PRELOAD
+ fi
+ if [ $__VGL_GE -eq 1 ]; then
+-	LD_PRELOAD=libgefaker.so:$LD_PRELOAD
++	LD_PRELOAD=/usr/lib64/VirtualGL/libgefaker.so:$LD_PRELOAD
++fi
+ fi
+ export LD_PRELOAD
+ exec ${1+"$@"}
