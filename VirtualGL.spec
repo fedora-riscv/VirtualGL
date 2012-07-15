@@ -10,7 +10,7 @@ Patch0:         %{name}-redhatpathsfix.patch
 Patch1:         %{name}-fltk.patch
 # Use system glx.h
 Patch2:         %{name}-glx.patch
-Release:        6%{?dist}
+Release:        7%{?dist}
 License:        wxWidgets
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
@@ -22,6 +22,9 @@ BuildRequires:  openssl-devel
 BuildRequires:  turbojpeg-devel
 BuildRequires:  mesa-libGLU-devel
 BuildRequires:  libXv-devel
+%if 0%{?fedora}
+BuildRequires:  mxml-devel
+%endif
 Requires:       fltk
 
 %description
@@ -121,6 +124,9 @@ mv $RPM_BUILD_ROOT%{_libdir}/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/VirtualGL/l
 
 
 %changelog
+* Sat Jul 14 2012 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.1-7
+- added BuildRequires:  mxml-devel for fedora builds only.
+
 * Thu Jul 12 2012 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.1-6
 - removed BuildArch: noarch from "devel" subpackage
 
