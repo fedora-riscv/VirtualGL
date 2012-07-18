@@ -10,7 +10,7 @@ Patch0:         %{name}-redhatpathsfix.patch
 Patch1:         %{name}-fltk.patch
 # Use system glx.h
 Patch2:         %{name}-glx.patch
-Release:        7%{?dist}
+Release:        8%{?dist}
 License:        wxWidgets
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
@@ -124,6 +124,9 @@ mv $RPM_BUILD_ROOT%{_libdir}/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/VirtualGL/l
 
 
 %changelog
+* Wed Jul 18 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.3.1-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
 * Sat Jul 14 2012 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.1-7
 - added BuildRequires:  mxml-devel for fedora builds only.
 
