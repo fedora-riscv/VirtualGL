@@ -122,7 +122,7 @@ mv $RPM_BUILD_ROOT%{_libdir}/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/VirtualGL/l
 
 %changelog
 * Sun Jul 22 2012 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.1-8
-- removed BuildRequires:  mxml-devel. see bugzilla 839060.
+- removed BuildRequires:  mxml-devel. see BZ839060. (#839060)
 
 * Sat Jul 14 2012 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.1-7
 - added BuildRequires:  mxml-devel for fedora builds only.
