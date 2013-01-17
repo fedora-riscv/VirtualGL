@@ -1,16 +1,16 @@
 Summary:        A toolkit for displaying OpenGL applications to thin clients
 Name:           VirtualGL
-Version:        2.3.1
+Version:        2.3.2
 URL:            http://www.virtualgl.org/
 Group:          Applications/System
 Source0:        http://downloads.sourceforge.net/project/virtualgl/VirtualGL/%{version}/VirtualGL-%{version}.tar.gz
 # Fix vglrun to be able to load the lib*faker libs
-Patch0:         %{name}-redhatpathsfix.patch
+Patch0:         %{name}-redhatpathsmultilibfix.patch
 # Use system fltk
 Patch1:         %{name}-fltk.patch
 # Use system glx.h
 Patch2:         %{name}-glx.patch
-Release:        8%{?dist}
+Release:        2%{?dist}
 License:        wxWidgets
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
@@ -66,7 +66,7 @@ Development headers and libraries for VirtualGL.
 
 %prep
 %setup -q
-%patch0 -p1 -b .redhatpathsfix
+%patch0 -p1 -b .redhatpathsmultilibfix
 %patch1 -p1 -b .fltk
 %patch2 -p1 -b .glx
 sed -i -e 's,"glx.h",<GL/glx.h>,' server/*.[hc]*
@@ -121,6 +121,15 @@ mv $RPM_BUILD_ROOT%{_libdir}/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/VirtualGL/l
 
 
 %changelog
+* Thu Jan 17 2013 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.2-1
+- rebuilding.
+
+* Sun Jan 13 2013 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.2-2
+- update to 2.3.2.
+
+* Tue Oct 23 2012 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.1-9
+- Fix problems with multilib support. Fix created by Andy Kwong.
+
 * Sun Jul 22 2012 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.1-8
 - removed BuildRequires:  mxml-devel. see BZ839060. (#839060)
 

@@ -1,0 +1,12 @@
+diff -up VirtualGL-2.3.2/server/vglrun.redhatpathsmultilibfix VirtualGL-2.3.2/server/vglrun
+--- VirtualGL-2.3.2/server/vglrun.redhatpathsmultilibfix	2013-01-13 11:52:09.971951341 -0500
++++ VirtualGL-2.3.2/server/vglrun	2013-01-13 11:54:05.809955713 -0500
+@@ -288,6 +288,8 @@ exec ${1+"$@"}
+ 
+ *)
+ 
++LD_LIBRARY_PATH=/usr/lib64/VirtualGL:/usr/lib/VirtualGL:$LD_LIBRARY_PATH
++
+ if [ -z "$LD_PRELOAD" ]; then
+ 	LD_PRELOAD=librrfaker.so
+ else
