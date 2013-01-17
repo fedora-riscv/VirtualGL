@@ -1,24 +1,28 @@
 Summary:        A toolkit for displaying OpenGL applications to thin clients
 Name:           VirtualGL
-Version:        2.3
-Vendor:         The VirtualGL Project
+Version:        2.3.2
 URL:            http://www.virtualgl.org/
 Group:          Applications/System
-Source0:        http://prdownloads.sourceforge.net/virtualgl/VirtualGL-%{version}.tar.gz
+Source0:        http://downloads.sourceforge.net/project/virtualgl/VirtualGL/%{version}/VirtualGL-%{version}.tar.gz
+# Fix vglrun to be able to load the lib*faker libs
+Patch0:         %{name}-redhatpathsmultilibfix.patch
+# Use system fltk
+Patch1:         %{name}-fltk.patch
+# Use system glx.h
+Patch2:         %{name}-glx.patch
 Release:        2%{?dist}
 License:        wxWidgets
-%if 0%{?fedora} >=13
-BuildRequires:  cmake
+%if 0%{?rhel} == 6
+BuildRequires: cmake28
 %else
-BuildRequires:  cmake28
+BuildRequires: cmake
 %endif
+BuildRequires:  fltk-devel
 BuildRequires:  openssl-devel
 BuildRequires:  turbojpeg-devel
-BuildRequires:  libX11-devel
-BuildRequires:  libXext-devel
-BuildRequires:  mesa-libGL-devel
 BuildRequires:  mesa-libGLU-devel
 BuildRequires:  libXv-devel
+Requires:       fltk
 
 %description
 VirtualGL is a toolkit that allows most Unix/Linux OpenGL applications to be
@@ -51,46 +55,55 @@ Ertl 2000.)
 
 %package devel
 Summary:    Development headers and libraries for VirtualGL
-BuildArch:  noarch
 Requires:   %{name}%{?_isa} = %{version}-%{release}
-Requires:   openssl-devel
-Requires:   turbojpeg-devel
-Requires:   libX11-devel
-Requires:   libXext-devel
-Requires:   mesa-libGL-devel
-Requires:   mesa-libGLU-devel
-Requires:   libXv-devel
+Requires:   openssl-devel%{?_isa}
+Requires:   turbojpeg-devel%{?_isa}
+Requires:   mesa-libGLU-devel%{?_isa}
+Requires:   libXv-devel%{?_isa}
 
 %description devel
 Development headers and libraries for VirtualGL.
 
 %prep
 %setup -q
+%patch0 -p1 -b .redhatpathsmultilibfix
+%patch1 -p1 -b .fltk
+%patch2 -p1 -b .glx
+sed -i -e 's,"glx.h",<GL/glx.h>,' server/*.[hc]*
+# Remove bundled libraries
+rm -r client/{putty,x11windows} common/glx* include/FL server/fltk
+rm doc/LICENSE-*.txt
 
 %build
-%cmake -DTJPEG_INCLUDE_DIR=%{_includedir} \
-       -DTJPEG_LIBRARY=%{_libdir}/libturbojpeg.so \
-       -DVGL_USESSL=ON -DVGL_LIBDIR=%{_libdir} \
-       -DVGL_DOCDIR=%{_docdir}/%{name}-%{version}/ \
-       -DVGL_FAKELIBDIR=%{_libdir}/fakelib/ .
+%if 0%{?rhel} == 6
+%cmake28 \
+%else
+%cmake \
+%endif
+         -DTJPEG_INCLUDE_DIR=%{_includedir} \
+         -DTJPEG_LIBRARY=%{_libdir}/libturbojpeg.so \
+         -DVGL_USESSL=ON -DVGL_LIBDIR=%{_libdir} \
+         -DVGL_DOCDIR=%{_docdir}/%{name}-%{version}/ \
+         -DVGL_FAKELIBDIR=%{_libdir}/fakelib/ .
 make %{?_smp_mflags}
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
-# renamed from glxinfo which provided by glx-utils
-mv $RPM_BUILD_ROOT%{_bindir}/{,v}glxinfo
+mkdir $RPM_BUILD_ROOT%{_libdir}/VirtualGL
+rm $RPM_BUILD_ROOT%{_bindir}/glxinfo
+mv $RPM_BUILD_ROOT%{_libdir}/libdlfaker.so $RPM_BUILD_ROOT%{_libdir}/VirtualGL/libdlfaker.so
+mv $RPM_BUILD_ROOT%{_libdir}/libgefaker.so $RPM_BUILD_ROOT%{_libdir}/VirtualGL/libgefaker.so
+mv $RPM_BUILD_ROOT%{_libdir}/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/VirtualGL/librrfaker.so
 
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
 
-%files -n %{name}
+%files
 %{_docdir}/%{name}-%{version}/
 %{_bindir}/tcbench
 %{_bindir}/nettest
 %{_bindir}/cpustat
-# renamed from glxinfo which provided by glx-utils
-%{_bindir}/vglxinfo
 %{_bindir}/vglclient
 %{_bindir}/vglconfig
 %{_bindir}/vglconnect
@@ -99,9 +112,7 @@ mv $RPM_BUILD_ROOT%{_bindir}/{,v}glxinfo
 %{_bindir}/vglserver_config
 %{_bindir}/vglrun
 %{_bindir}/glxspheres
-%{_libdir}/libdlfaker.so
-%{_libdir}/libgefaker.so
-%{_libdir}/librrfaker.so
+%{_libdir}/VirtualGL/
 %{_libdir}/fakelib/
 
 %files devel
@@ -110,8 +121,44 @@ mv $RPM_BUILD_ROOT%{_bindir}/{,v}glxinfo
 
 
 %changelog
+* Thu Jan 17 2013 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.2-1
+- rebuilding.
+
+* Sun Jan 13 2013 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.2-2
+- update to 2.3.2.
+
+* Tue Oct 23 2012 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.1-9
+- Fix problems with multilib support. Fix created by Andy Kwong.
+
+* Sun Jul 22 2012 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.1-8
+- removed BuildRequires:  mxml-devel. see BZ839060. (#839060)
+
+* Sat Jul 14 2012 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.1-7
+- added BuildRequires:  mxml-devel for fedora builds only.
+
+* Thu Jul 12 2012 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.1-6
+- removed BuildArch: noarch from "devel" subpackage
+
+* Thu Jul 12 2012 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.1-5
+- change to cmake macros in the build section of specfile
+
+* Tue Jul 10 2012 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.1-4
+- fix vglrun patch to use uname -i to determine platform.
+- fix cmake macro problems on rhel 6.
+- remove Vendor tag from specfile
+
+* Tue Jul 10 2012 Orion Poplawski <orion@nwra.com> - 2.3.1-3
+- Use system glx, fltk
+- Don't ship glxinfo
+
+* Fri Jul 6 2012 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.1-2
+- Added patch for library paths within the vglrun script.
+
+* Thu Jul 5 2012 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.1-1
+- Upgrade to 2.3.1 and made changes to better follow packaging guidelines for fedora project.
+
 * Wed Jun 6 2012 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3-2
-- Very minor edit for building on older fedora or RHEL 6 with the same specfile
-  as newer fedora.
+- Very minor edit for building on RHEL 6 with the same specfile as newer fedora.
+
 * Thu Feb 16 2012 Robin Lee <cheeselee@fedoraproject.org> - 2.3-1
 - Specfile based on upstream and Mandriva specfiles
