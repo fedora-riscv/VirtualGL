@@ -10,7 +10,7 @@ Patch0:         %{name}-redhatpathsmultilibfix.patch
 Patch1:         %{name}-fltk.patch
 # Use system glx.h
 Patch2:         %{name}-glx.patch
-Release:        2%{?dist}
+Release:        3%{?dist}
 License:        wxWidgets
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
@@ -121,6 +121,9 @@ mv $RPM_BUILD_ROOT%{_libdir}/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/VirtualGL/l
 
 
 %changelog
+* Wed Feb 20 2013 Adam Tkac <atkac redhat com> - 2.3.2-3
+- rebuild
+
 * Thu Jan 17 2013 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.2-1
 - rebuilding.
 
