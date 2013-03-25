@@ -10,7 +10,9 @@ Patch0:         %{name}-redhatpathsmultilibfix.patch
 Patch1:         %{name}-fltk.patch
 # Use system glx.h
 Patch2:         %{name}-glx.patch
-Release:        3%{?dist}
+# fix for bz923961
+Patch3:         %{name}-redhatpathsfix.patch
+Release:        4%{?dist}
 License:        wxWidgets
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
@@ -23,6 +25,7 @@ BuildRequires:  turbojpeg-devel
 BuildRequires:  mesa-libGLU-devel
 BuildRequires:  libXv-devel
 Requires:       fltk
+Provides:       bumblebee-bridge
 
 %description
 VirtualGL is a toolkit that allows most Unix/Linux OpenGL applications to be
@@ -69,6 +72,8 @@ Development headers and libraries for VirtualGL.
 %patch0 -p1 -b .redhatpathsmultilibfix
 %patch1 -p1 -b .fltk
 %patch2 -p1 -b .glx
+%patch3 -p1 -b .redhatpathsfix
+
 sed -i -e 's,"glx.h",<GL/glx.h>,' server/*.[hc]*
 # Remove bundled libraries
 rm -r client/{putty,x11windows} common/glx* include/FL server/fltk
@@ -121,6 +126,10 @@ mv $RPM_BUILD_ROOT%{_libdir}/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/VirtualGL/l
 
 
 %changelog
+* Sun Mar 24 2013 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.2-4
+- Fix (#923961) Change /opt/VirtualGL/bin to /usr/bin in vglconnect.
+- Add virtual provides for bumblebee-bridge package.
+
 * Wed Feb 20 2013 Adam Tkac <atkac redhat com> - 2.3.2-3
 - rebuild
 
