@@ -10,13 +10,9 @@ Patch0:         %{name}-redhatpathsmultilibfix.patch
 Patch1:         %{name}-fltk.patch
 # Use system glx.h
 Patch2:         %{name}-glx.patch
-<<<<<<< HEAD
-Release:        2%{?dist}
-=======
 # fix for bz923961
 Patch3:         %{name}-redhatpathsfix.patch
 Release:        4%{?dist}
->>>>>>> master
 License:        wxWidgets
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
@@ -130,8 +126,6 @@ mv $RPM_BUILD_ROOT%{_libdir}/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/VirtualGL/l
 
 
 %changelog
-<<<<<<< HEAD
-=======
 * Sun Mar 24 2013 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.2-4
 - Fix (#923961) Change /opt/VirtualGL/bin to /usr/bin in vglconnect.
 - Add virtual provides for bumblebee-bridge package.
@@ -139,7 +133,6 @@ mv $RPM_BUILD_ROOT%{_libdir}/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/VirtualGL/l
 * Wed Feb 20 2013 Adam Tkac <atkac redhat com> - 2.3.2-3
 - rebuild
 
->>>>>>> master
 * Thu Jan 17 2013 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.2-1
 - rebuilding.
 
