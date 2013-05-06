@@ -12,7 +12,7 @@ Patch1:         %{name}-fltk.patch
 Patch2:         %{name}-glx.patch
 # fix for bz923961
 Patch3:         %{name}-redhatpathsfix.patch
-Release:        4%{?dist}
+Release:        5%{?dist}
 License:        wxWidgets
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
@@ -99,6 +99,7 @@ rm $RPM_BUILD_ROOT%{_bindir}/glxinfo
 mv $RPM_BUILD_ROOT%{_libdir}/libdlfaker.so $RPM_BUILD_ROOT%{_libdir}/VirtualGL/libdlfaker.so
 mv $RPM_BUILD_ROOT%{_libdir}/libgefaker.so $RPM_BUILD_ROOT%{_libdir}/VirtualGL/libgefaker.so
 mv $RPM_BUILD_ROOT%{_libdir}/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/VirtualGL/librrfaker.so
+ln -sf %{_libdir}/VirtualGL/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/fakelib/libGL.so
 
 %post -p /sbin/ldconfig
 
@@ -126,6 +127,9 @@ mv $RPM_BUILD_ROOT%{_libdir}/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/VirtualGL/l
 
 
 %changelog
+* Mon May 6 2013 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.2-5
+- Fix (#923961) More path changes to vglrun to really fix issue.
+
 * Sun Mar 24 2013 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.2-4
 - Fix (#923961) Change /opt/VirtualGL/bin to /usr/bin in vglconnect.
 - Add virtual provides for bumblebee-bridge package.
