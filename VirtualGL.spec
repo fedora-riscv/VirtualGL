@@ -12,7 +12,7 @@ Patch1:         %{name}-fltk.patch
 Patch2:         %{name}-glx.patch
 # fix for bz923961
 Patch3:         %{name}-redhatpathsfix.patch
-Release:        5%{?dist}
+Release:        6%{?dist}
 License:        wxWidgets
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
@@ -127,6 +127,9 @@ ln -sf %{_libdir}/VirtualGL/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/fakelib/libG
 
 
 %changelog
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.3.2-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Mon May 6 2013 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.2-5
 - Fix (#923961) More path changes to vglrun to really fix issue.
 
