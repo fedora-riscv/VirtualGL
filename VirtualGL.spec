@@ -12,11 +12,7 @@ Patch1:         %{name}-fltk.patch
 Patch2:         %{name}-glx.patch
 # fix for bz923961
 Patch3:         %{name}-redhatpathsfix.patch
-<<<<<<< HEAD
 Release:        7%{?dist}
-=======
-Release:        6%{?dist}
->>>>>>> 6d335298c27220ac84472b82ea56fe8c35a975e8
 License:        wxWidgets
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
@@ -131,12 +127,9 @@ ln -sf %{_libdir}/VirtualGL/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/fakelib/libG
 
 
 %changelog
-<<<<<<< HEAD
 * Tue Aug 6 2013 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.2-7
 - Fix (#993894) unversioned docdir change for f20.
 
-=======
->>>>>>> 6d335298c27220ac84472b82ea56fe8c35a975e8
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.3.2-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
