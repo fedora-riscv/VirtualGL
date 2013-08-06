@@ -12,7 +12,7 @@ Patch1:         %{name}-fltk.patch
 Patch2:         %{name}-glx.patch
 # fix for bz923961
 Patch3:         %{name}-redhatpathsfix.patch
-Release:        5%{?dist}
+Release:        7%{?dist}
 License:        wxWidgets
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
@@ -88,7 +88,7 @@ rm doc/LICENSE-*.txt
          -DTJPEG_INCLUDE_DIR=%{_includedir} \
          -DTJPEG_LIBRARY=%{_libdir}/libturbojpeg.so \
          -DVGL_USESSL=ON -DVGL_LIBDIR=%{_libdir} \
-         -DVGL_DOCDIR=%{_docdir}/%{name}-%{version}/ \
+         -DVGL_DOCDIR=%{_docdir}/%{name}/ \
          -DVGL_FAKELIBDIR=%{_libdir}/fakelib/ .
 make %{?_smp_mflags}
 
@@ -106,7 +106,7 @@ ln -sf %{_libdir}/VirtualGL/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/fakelib/libG
 %postun -p /sbin/ldconfig
 
 %files
-%{_docdir}/%{name}-%{version}/
+%{_docdir}/%{name}/
 %{_bindir}/tcbench
 %{_bindir}/nettest
 %{_bindir}/cpustat
@@ -127,6 +127,12 @@ ln -sf %{_libdir}/VirtualGL/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/fakelib/libG
 
 
 %changelog
+* Tue Aug 6 2013 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.2-7
+- Fix (#993894) unversioned docdir change for f20.
+
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.3.2-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Mon May 6 2013 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.2-5
 - Fix (#923961) More path changes to vglrun to really fix issue.
 
