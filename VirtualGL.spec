@@ -1,18 +1,16 @@
 Summary:        A toolkit for displaying OpenGL applications to thin clients
 Name:           VirtualGL
-Version:        2.3.2
+Version:        2.3.3
 URL:            http://www.virtualgl.org/
 Group:          Applications/System
 Source0:        http://downloads.sourceforge.net/project/virtualgl/VirtualGL/%{version}/VirtualGL-%{version}.tar.gz
-# Fix vglrun to be able to load the lib*faker libs
-Patch0:         %{name}-redhatpathsmultilibfix.patch
 # Use system fltk
-Patch1:         %{name}-fltk.patch
+Patch0:         %{name}-fltk.patch
 # Use system glx.h
-Patch2:         %{name}-glx.patch
+Patch1:         %{name}-glx.patch
 # fix for bz923961
-Patch3:         %{name}-redhatpathsfix.patch
-Release:        7%{?dist}
+Patch2:         %{name}-redhatpathsfix.patch
+Release:        1%{?dist}
 License:        wxWidgets
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
@@ -69,10 +67,9 @@ Development headers and libraries for VirtualGL.
 
 %prep
 %setup -q
-%patch0 -p1 -b .redhatpathsmultilibfix
-%patch1 -p1 -b .fltk
-%patch2 -p1 -b .glx
-%patch3 -p1 -b .redhatpathsfix
+%patch0 -p1 -b .fltk
+%patch1 -p1 -b .glx
+%patch2 -p1 -b .redhatpathsfix
 
 sed -i -e 's,"glx.h",<GL/glx.h>,' server/*.[hc]*
 # Remove bundled libraries
@@ -89,16 +86,13 @@ rm doc/LICENSE-*.txt
          -DTJPEG_LIBRARY=%{_libdir}/libturbojpeg.so \
          -DVGL_USESSL=ON -DVGL_LIBDIR=%{_libdir} \
          -DVGL_DOCDIR=%{_docdir}/%{name}/ \
+         -DVGL_LIBDIR=%{_libdir}/VirtualGL/ \
          -DVGL_FAKELIBDIR=%{_libdir}/fakelib/ .
 make %{?_smp_mflags}
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
-mkdir $RPM_BUILD_ROOT%{_libdir}/VirtualGL
 rm $RPM_BUILD_ROOT%{_bindir}/glxinfo
-mv $RPM_BUILD_ROOT%{_libdir}/libdlfaker.so $RPM_BUILD_ROOT%{_libdir}/VirtualGL/libdlfaker.so
-mv $RPM_BUILD_ROOT%{_libdir}/libgefaker.so $RPM_BUILD_ROOT%{_libdir}/VirtualGL/libgefaker.so
-mv $RPM_BUILD_ROOT%{_libdir}/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/VirtualGL/librrfaker.so
 ln -sf %{_libdir}/VirtualGL/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/fakelib/libGL.so
 
 %post -p /sbin/ldconfig
@@ -117,7 +111,14 @@ ln -sf %{_libdir}/VirtualGL/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/fakelib/libG
 %{_bindir}/vgllogin
 %{_bindir}/vglserver_config
 %{_bindir}/vglrun
+%{_bindir}/glreadtest
+%ifarch x86_64
+%{_bindir}/glxspheres64
+%{_bindir}/.vglrun.vars64
+%else
 %{_bindir}/glxspheres
+%{_bindir}/.vglrun.vars32
+%endif
 %{_libdir}/VirtualGL/
 %{_libdir}/fakelib/
 
@@ -127,6 +128,9 @@ ln -sf %{_libdir}/VirtualGL/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/fakelib/libG
 
 
 %changelog
+* Sat Nov 2 2013 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.3-1
+- Update to 2.3.3.
+
 * Tue Aug 6 2013 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.2-7
 - Fix (#993894) unversioned docdir change for f20.
 
