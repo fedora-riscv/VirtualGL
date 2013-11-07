@@ -10,7 +10,7 @@ Patch0:         %{name}-fltk.patch
 Patch1:         %{name}-glx.patch
 # fix for bz923961
 Patch2:         %{name}-redhatpathsfix.patch
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        wxWidgets
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
@@ -112,7 +112,7 @@ ln -sf %{_libdir}/VirtualGL/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/fakelib/libG
 %{_bindir}/vglserver_config
 %{_bindir}/vglrun
 %{_bindir}/glreadtest
-%ifarch x86_64
+%if %{__isa_bits} == 64
 %{_bindir}/glxspheres64
 %{_bindir}/.vglrun.vars64
 %else
@@ -128,6 +128,9 @@ ln -sf %{_libdir}/VirtualGL/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/fakelib/libG
 
 
 %changelog
+* Thu Nov 7 2013 Dan Horák <dan[at]danny.cz> - 2.3.3-2
+- fix build on non-x86 arches
+
 * Sat Nov 2 2013 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.3-1
 - Update to 2.3.3.
 
