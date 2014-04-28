@@ -10,7 +10,9 @@ Patch0:         %{name}-fltk.patch
 Patch1:         %{name}-glx.patch
 # fix for bz923961
 Patch2:         %{name}-redhatpathsfix.patch
-Release:        2%{?dist}
+# fix for bz1088475
+Patch3:         %{name}-redhatlibexecpathsfix.patch
+Release:        3%{?dist}
 License:        wxWidgets
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
@@ -70,6 +72,7 @@ Development headers and libraries for VirtualGL.
 %patch0 -p1 -b .fltk
 %patch1 -p1 -b .glx
 %patch2 -p1 -b .redhatpathsfix
+%patch3 -p1 -b .redhatlibexecpathsfix
 
 sed -i -e 's,"glx.h",<GL/glx.h>,' server/*.[hc]*
 # Remove bundled libraries
@@ -94,6 +97,13 @@ make %{?_smp_mflags}
 make install DESTDIR=$RPM_BUILD_ROOT
 rm $RPM_BUILD_ROOT%{_bindir}/glxinfo
 ln -sf %{_libdir}/VirtualGL/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/fakelib/libGL.so
+# fix for bz1088475
+mkdir $RPM_BUILD_ROOT%{_libexecdir}
+%if %{__isa_bits} == 64
+mv $RPM_BUILD_ROOT%{_bindir}/.vglrun.vars64 $RPM_BUILD_ROOT%{_libexecdir}/vglrun.vars64
+%else
+mv $RPM_BUILD_ROOT%{_bindir}/.vglrun.vars32 $RPM_BUILD_ROOT%{_libexecdir}/vglrun.vars32
+%endif
 
 %post -p /sbin/ldconfig
 
@@ -114,10 +124,10 @@ ln -sf %{_libdir}/VirtualGL/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/fakelib/libG
 %{_bindir}/glreadtest
 %if %{__isa_bits} == 64
 %{_bindir}/glxspheres64
-%{_bindir}/.vglrun.vars64
+%{_libexecdir}/vglrun.vars64
 %else
 %{_bindir}/glxspheres
-%{_bindir}/.vglrun.vars32
+%{_libexecdir}/vglrun.vars32
 %endif
 %{_libdir}/VirtualGL/
 %{_libdir}/fakelib/
@@ -128,6 +138,9 @@ ln -sf %{_libdir}/VirtualGL/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/fakelib/libG
 
 
 %changelog
+* Sun Apr 27 2014 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.3.3-3
+- Fix (#1088475) don't install hidden files into /usr/bin
+
 * Thu Nov 7 2013 Dan Horák <dan[at]danny.cz> - 2.3.3-2
 - fix build on non-x86 arches
 
