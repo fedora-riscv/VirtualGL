@@ -99,7 +99,7 @@ rm $RPM_BUILD_ROOT%{_bindir}/glxinfo
 ln -sf %{_libdir}/VirtualGL/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/fakelib/libGL.so
 # fix for bz1088475
 mkdir $RPM_BUILD_ROOT%{_libexecdir}
-%if %{__isa_bits} == 64
+%if 0%{?__isa_bits} == 64
 mv $RPM_BUILD_ROOT%{_bindir}/.vglrun.vars64 $RPM_BUILD_ROOT%{_libexecdir}/vglrun.vars64
 %else
 mv $RPM_BUILD_ROOT%{_bindir}/.vglrun.vars32 $RPM_BUILD_ROOT%{_libexecdir}/vglrun.vars32
@@ -122,7 +122,7 @@ mv $RPM_BUILD_ROOT%{_bindir}/.vglrun.vars32 $RPM_BUILD_ROOT%{_libexecdir}/vglrun
 %{_bindir}/vglserver_config
 %{_bindir}/vglrun
 %{_bindir}/glreadtest
-%if %{__isa_bits} == 64
+%if 0%{?__isa_bits} == 64
 %{_bindir}/glxspheres64
 %{_libexecdir}/vglrun.vars64
 %else
