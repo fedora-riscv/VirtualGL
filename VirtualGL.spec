@@ -12,7 +12,7 @@ Patch1:         %{name}-glx.patch
 Patch2:         %{name}-redhatpathsfix.patch
 # fix for bz1088475
 Patch3:         %{name}-redhatlibexecpathsfix.patch
-Release:        4%{?dist}
+Release:        5%{?dist}
 License:        wxWidgets
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
@@ -138,6 +138,9 @@ mv $RPM_BUILD_ROOT%{_bindir}/.vglrun.vars32 $RPM_BUILD_ROOT%{_libexecdir}/vglrun
 
 
 %changelog
+* Fri Aug 15 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.3.3-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
 * Fri Jun 06 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.3.3-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
