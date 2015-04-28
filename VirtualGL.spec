@@ -1,18 +1,16 @@
 Summary:        A toolkit for displaying OpenGL applications to thin clients
 Name:           VirtualGL
-Version:        2.3.3
+Version:        2.4
 URL:            http://www.virtualgl.org/
 Group:          Applications/System
 Source0:        http://downloads.sourceforge.net/project/virtualgl/VirtualGL/%{version}/VirtualGL-%{version}.tar.gz
-# Use system fltk
-Patch0:         %{name}-fltk.patch
 # Use system glx.h
 Patch1:         %{name}-glx.patch
 # fix for bz923961
 Patch2:         %{name}-redhatpathsfix.patch
 # fix for bz1088475
 Patch3:         %{name}-redhatlibexecpathsfix.patch
-Release:        6%{?dist}
+Release:        1%{?dist}
 License:        wxWidgets
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
@@ -24,6 +22,7 @@ BuildRequires:  openssl-devel
 BuildRequires:  turbojpeg-devel
 BuildRequires:  mesa-libGLU-devel
 BuildRequires:  libXv-devel
+BuildRequires:  gcc-c++
 Requires:       fltk
 Provides:       bumblebee-bridge
 
@@ -69,14 +68,13 @@ Development headers and libraries for VirtualGL.
 
 %prep
 %setup -q
-%patch0 -p1 -b .fltk
 %patch1 -p1 -b .glx
 %patch2 -p1 -b .redhatpathsfix
 %patch3 -p1 -b .redhatlibexecpathsfix
 
 sed -i -e 's,"glx.h",<GL/glx.h>,' server/*.[hc]*
 # Remove bundled libraries
-rm -r client/{putty,x11windows} common/glx* include/FL server/fltk
+rm -r common/glx* server/fltk
 rm doc/LICENSE-*.txt
 
 %build
@@ -85,6 +83,7 @@ rm doc/LICENSE-*.txt
 %else
 %cmake \
 %endif
+         -DVGL_SYSTEMFLTK=1 \
          -DTJPEG_INCLUDE_DIR=%{_includedir} \
          -DTJPEG_LIBRARY=%{_libdir}/libturbojpeg.so \
          -DVGL_USESSL=ON -DVGL_LIBDIR=%{_libdir} \
@@ -138,8 +137,8 @@ mv $RPM_BUILD_ROOT%{_bindir}/.vglrun.vars32 $RPM_BUILD_ROOT%{_libexecdir}/vglrun
 
 
 %changelog
-* Wed Feb 18 2015 Rex Dieter <rdieter@fedoraproject.org> 2.3.3-6
-- rebuild (fltk,gcc5)
+* Tue Apr 28 2015 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.4-1
+- Fix (#1198135) Update to 2.4.
 
 * Fri Aug 15 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.3.3-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
