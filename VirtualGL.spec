@@ -10,7 +10,7 @@ Patch1:         %{name}-glx.patch
 Patch2:         %{name}-redhatpathsfix.patch
 # fix for bz1088475
 Patch3:         %{name}-redhatlibexecpathsfix.patch
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        wxWidgets
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
@@ -137,8 +137,14 @@ mv $RPM_BUILD_ROOT%{_bindir}/.vglrun.vars32 $RPM_BUILD_ROOT%{_libexecdir}/vglrun
 
 
 %changelog
+* Tue Apr 28 2015 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.4-2
+- Fix problems in changelog.
+
 * Tue Apr 28 2015 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.4-1
 - Fix (#1198135) Update to 2.4.
+
+-* Wed Feb 18 2015 Rex Dieter <rdieter@fedoraproject.org> 2.3.3-6
+- rebuild (fltk,gcc5)
 
 * Fri Aug 15 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.3.3-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
