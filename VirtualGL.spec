@@ -10,7 +10,9 @@ Patch1:         %{name}-glx.patch
 Patch2:         %{name}-redhatpathsfix.patch
 # fix for bz1088475
 Patch3:         %{name}-redhatlibexecpathsfix.patch
-Release:        2%{?dist}
+# Fix for ppc64 rhel 6 build.
+Patch4:         %{name}-gccrhel6fix.patch
+Release:        4%{?dist}
 License:        wxWidgets
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
@@ -23,6 +25,7 @@ BuildRequires:  turbojpeg-devel
 BuildRequires:  mesa-libGLU-devel
 BuildRequires:  libXv-devel
 BuildRequires:  gcc-c++
+BuildRequires:  xcb-util-keysyms-devel
 Requires:       fltk
 Provides:       bumblebee-bridge
 
@@ -58,7 +61,6 @@ Ertl 2000.)
 %package devel
 Summary:    Development headers and libraries for VirtualGL
 Requires:   %{name}%{?_isa} = %{version}-%{release}
-Requires:   openssl-devel%{?_isa}
 Requires:   turbojpeg-devel%{?_isa}
 Requires:   mesa-libGLU-devel%{?_isa}
 Requires:   libXv-devel%{?_isa}
@@ -71,6 +73,11 @@ Development headers and libraries for VirtualGL.
 %patch1 -p1 -b .glx
 %patch2 -p1 -b .redhatpathsfix
 %patch3 -p1 -b .redhatlibexecpathsfix
+
+%if 0%{?rhel} == 6
+%patch4 -p1 -b .gccrhel6fix
+%endif
+
 
 sed -i -e 's,"glx.h",<GL/glx.h>,' server/*.[hc]*
 # Remove bundled libraries
@@ -86,9 +93,10 @@ rm doc/LICENSE-*.txt
          -DVGL_SYSTEMFLTK=1 \
          -DTJPEG_INCLUDE_DIR=%{_includedir} \
          -DTJPEG_LIBRARY=%{_libdir}/libturbojpeg.so \
-         -DVGL_USESSL=ON -DVGL_LIBDIR=%{_libdir} \
+         -DVGL_LIBDIR=%{_libdir} \
          -DVGL_DOCDIR=%{_docdir}/%{name}/ \
          -DVGL_LIBDIR=%{_libdir}/VirtualGL/ \
+         -DVGL_FAKEXCB=1 \
          -DVGL_FAKELIBDIR=%{_libdir}/fakelib/ .
 make %{?_smp_mflags}
 
@@ -137,13 +145,21 @@ mv $RPM_BUILD_ROOT%{_bindir}/.vglrun.vars32 $RPM_BUILD_ROOT%{_libexecdir}/vglrun
 
 
 %changelog
+
+* Fri May 1 2015 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.4-4
+- Fix (#1198149) Disable SSL support.
+- Fix (#1198135) add -DVGL_FAKEXCB=1 to build options.
+
+* Wed Apr 29 2015 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.4-3
+- Fix problems with build on ppc rhel 6.
+
 * Tue Apr 28 2015 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.4-2
 - Fix problems in changelog.
 
 * Tue Apr 28 2015 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.4-1
 - Fix (#1198135) Update to 2.4.
 
--* Wed Feb 18 2015 Rex Dieter <rdieter@fedoraproject.org> 2.3.3-6
+* Wed Feb 18 2015 Rex Dieter <rdieter@fedoraproject.org> 2.3.3-6
 - rebuild (fltk,gcc5)
 
 * Fri Aug 15 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.3.3-5
