@@ -12,7 +12,7 @@ Patch2:         %{name}-redhatpathsfix.patch
 Patch3:         %{name}-redhatlibexecpathsfix.patch
 # Fix for ppc64 rhel 6 build.
 Patch4:         %{name}-gccrhel6fix.patch
-Release:        4%{?dist}
+Release:        5%{?dist}
 License:        wxWidgets
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
@@ -145,6 +145,9 @@ mv $RPM_BUILD_ROOT%{_bindir}/.vglrun.vars32 $RPM_BUILD_ROOT%{_libexecdir}/vglrun
 
 
 %changelog
+* Tue Jun 16 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.4-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 
 * Fri May 1 2015 Gary Gatling <gsgatlin@eos.ncsu.edu> - 2.4-4
 - Fix (#1198149) Disable SSL support.
