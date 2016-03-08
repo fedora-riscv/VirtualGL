@@ -12,7 +12,9 @@ Patch2:         %{name}-redhatpathsfix.patch
 Patch3:         %{name}-redhatlibexecpathsfix.patch
 # Fix for ppc64 rhel 6 build.
 Patch4:         %{name}-gccrhel6fix.patch
-Release:        6%{?dist}
+# Fix for GCC 6 (bz1307302)
+Patch5:         %{name}-gcc6.patch
+Release:        7%{?dist}
 License:        wxWidgets
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
@@ -77,6 +79,7 @@ Development headers and libraries for VirtualGL.
 %if 0%{?rhel} == 6
 %patch4 -p1 -b .gccrhel6fix
 %endif
+%patch5 -p1 -b .gcc6
 
 
 sed -i -e 's,"glx.h",<GL/glx.h>,' server/*.[hc]*
@@ -145,6 +148,9 @@ mv $RPM_BUILD_ROOT%{_bindir}/.vglrun.vars32 $RPM_BUILD_ROOT%{_libexecdir}/vglrun
 
 
 %changelog
+* Tue Mar 08 2016 Yaakov Selkowitz <yselkowi@redhat.com> - 2.4-7
+- Fix (#1307302) FTBFS with GCC 6
+
 * Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 2.4-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
