@@ -14,7 +14,7 @@ Patch3:         %{name}-redhatlibexecpathsfix.patch
 Patch4:         %{name}-gccrhel6fix.patch
 # Fix for GCC 6 (bz1307302)
 Patch5:         %{name}-gcc6.patch
-Release:        7%{?dist}
+Release:        8%{?dist}
 License:        wxWidgets
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
@@ -148,6 +148,9 @@ mv $RPM_BUILD_ROOT%{_bindir}/.vglrun.vars32 $RPM_BUILD_ROOT%{_libexecdir}/vglrun
 
 
 %changelog
+* Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2.4-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
 * Tue Mar 08 2016 Yaakov Selkowitz <yselkowi@redhat.com> - 2.4-7
 - Fix (#1307302) FTBFS with GCC 6
 
