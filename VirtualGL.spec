@@ -14,7 +14,7 @@ Patch3:         %{name}-redhatlibexecpathsfix.patch
 Patch4:         %{name}-gccrhel6fix.patch
 # Fix for GCC 6 (bz1307302)
 Patch5:         %{name}-gcc6.patch
-Release:        10%{?dist}
+Release:        11%{?dist}
 License:        wxWidgets
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
@@ -148,6 +148,9 @@ mv $RPM_BUILD_ROOT%{_bindir}/.vglrun.vars32 $RPM_BUILD_ROOT%{_libexecdir}/vglrun
 
 
 %changelog
+* Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 2.4-11
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
 * Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2.4-10
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
