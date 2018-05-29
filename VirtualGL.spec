@@ -1,6 +1,6 @@
 Summary:        A toolkit for displaying OpenGL applications to thin clients
 Name:           VirtualGL
-Version:        2.4
+Version:        2.5.2
 URL:            http://www.virtualgl.org/
 Group:          Applications/System
 Source0:        http://downloads.sourceforge.net/project/virtualgl/VirtualGL/%{version}/VirtualGL-%{version}.tar.gz
@@ -10,12 +10,8 @@ Patch1:         %{name}-glx.patch
 Patch2:         %{name}-redhatpathsfix.patch
 # fix for bz1088475
 Patch3:         %{name}-redhatlibexecpathsfix.patch
-# Fix for ppc64 rhel 6 build.
-Patch4:         %{name}-gccrhel6fix.patch
-# Fix for GCC 6 (bz1307302)
-Patch5:         %{name}-gcc6.patch
-Release:        11%{?dist}
-License:        wxWidgets
+Release:        1%{?dist}
+License:        wxWindows
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
 %else
@@ -29,6 +25,9 @@ BuildRequires:  libXv-devel
 BuildRequires:  gcc-c++
 BuildRequires:  xcb-util-keysyms-devel
 Requires:       fltk
+%if 0%{?fedora:1} || 0%{?rhel} >= 7
+Requires:       hostname
+%endif
 Provides:       bumblebee-bridge
 
 %description
@@ -73,14 +72,8 @@ Development headers and libraries for VirtualGL.
 %prep
 %setup -q
 %patch1 -p1 -b .glx
-%patch2 -p1 -b .redhatpathsfix
+%patch2 -p1 -b .redhatpathfix
 %patch3 -p1 -b .redhatlibexecpathsfix
-
-%if 0%{?rhel} == 6
-%patch4 -p1 -b .gccrhel6fix
-%endif
-%patch5 -p1 -b .gcc6
-
 
 sed -i -e 's,"glx.h",<GL/glx.h>,' server/*.[hc]*
 # Remove bundled libraries
@@ -89,23 +82,29 @@ rm doc/LICENSE-*.txt
 
 %build
 %if 0%{?rhel} == 6
-%cmake28 \
+cmake28 \
 %else
 %cmake \
 %endif
          -DVGL_SYSTEMFLTK=1 \
-         -DTJPEG_INCLUDE_DIR=%{_includedir} \
-         -DTJPEG_LIBRARY=%{_libdir}/libturbojpeg.so \
-         -DVGL_LIBDIR=%{_libdir} \
-         -DVGL_DOCDIR=%{_docdir}/%{name}/ \
-         -DVGL_LIBDIR=%{_libdir}/VirtualGL/ \
+         -DVGL_SYSTEMGLX=1 \
          -DVGL_FAKEXCB=1 \
-         -DVGL_FAKELIBDIR=%{_libdir}/fakelib/ .
+         -DVGL_USESSL=0 \
+         -DVGL_BUILDSTATIC=0 \
+         -DTJPEG_INCLUDE_DIR=%{_includedir}/ \
+         -DTJPEG_LIBRARY=%{_libdir}/libturbojpeg.so \
+         -DCMAKE_INSTALL_PREFIX=%{_prefix}/ \
+         -DCMAKE_INSTALL_LIBDIR=%{_libdir}/VirtualGL/ \
+         -DCMAKE_INSTALL_DOCDIR=%{_docdir}/%{name}/ \
+         -DCMAKE_INSTALL_BINDIR=%{_bindir}/ .
 make %{?_smp_mflags}
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
-rm $RPM_BUILD_ROOT%{_bindir}/glxinfo
+# glxinfo conflicts with command from glx-utils so lets do what Arch does
+# and rename the command
+mv $RPM_BUILD_ROOT/%{_bindir}/glxinfo $RPM_BUILD_ROOT/%{_bindir}/vglxinfo
+mkdir -p $RPM_BUILD_ROOT%{_libdir}/fakelib/
 ln -sf %{_libdir}/VirtualGL/librrfaker.so $RPM_BUILD_ROOT%{_libdir}/fakelib/libGL.so
 # fix for bz1088475
 mkdir $RPM_BUILD_ROOT%{_libexecdir}
@@ -131,6 +130,7 @@ mv $RPM_BUILD_ROOT%{_bindir}/.vglrun.vars32 $RPM_BUILD_ROOT%{_libexecdir}/vglrun
 %{_bindir}/vgllogin
 %{_bindir}/vglserver_config
 %{_bindir}/vglrun
+%{_bindir}/vglxinfo
 %{_bindir}/glreadtest
 %if 0%{?__isa_bits} == 64
 %{_bindir}/glxspheres64
@@ -148,6 +148,11 @@ mv $RPM_BUILD_ROOT%{_bindir}/.vglrun.vars32 $RPM_BUILD_ROOT%{_libexecdir}/vglrun
 
 
 %changelog
+* Tue May 29 2018 Gary Gatling <gsgatlin@ncsu.edu> - 2.5.2-1
+- Fix (#1566666) Update to 2.5.2
+- Fix (#1309831) adding hostname requires on rhel 7 and fedora
+- Fix (#1574902) modify VirtualGL-redhatlibexecpathsfix.patch to use -f not -x 
+
 * Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 2.4-11
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
