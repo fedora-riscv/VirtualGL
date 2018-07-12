@@ -10,7 +10,7 @@ Patch1:         %{name}-glx.patch
 Patch2:         %{name}-redhatpathsfix.patch
 # fix for bz1088475
 Patch3:         %{name}-redhatlibexecpathsfix.patch
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        wxWindows
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
@@ -148,6 +148,9 @@ mv $RPM_BUILD_ROOT%{_bindir}/.vglrun.vars32 $RPM_BUILD_ROOT%{_libexecdir}/vglrun
 
 
 %changelog
+* Thu Jul 12 2018 Fedora Release Engineering <releng@fedoraproject.org> - 2.5.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
 * Tue May 29 2018 Gary Gatling <gsgatlin@ncsu.edu> - 2.5.2-1
 - Fix (#1566666) Update to 2.5.2
 - Fix (#1309831) adding hostname requires on rhel 7 and fedora
