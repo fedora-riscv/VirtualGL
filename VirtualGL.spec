@@ -114,9 +114,7 @@ mv $RPM_BUILD_ROOT%{_bindir}/.vglrun.vars64 $RPM_BUILD_ROOT%{_libexecdir}/vglrun
 mv $RPM_BUILD_ROOT%{_bindir}/.vglrun.vars32 $RPM_BUILD_ROOT%{_libexecdir}/vglrun.vars32
 %endif
 
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
+%ldconfig_scriptlets
 
 %files
 %{_docdir}/%{name}/
