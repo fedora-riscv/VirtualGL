@@ -2,7 +2,6 @@ Summary:        A toolkit for displaying OpenGL applications to thin clients
 Name:           VirtualGL
 Version:        2.5.2
 URL:            http://www.virtualgl.org/
-Group:          Applications/System
 Source0:        http://downloads.sourceforge.net/project/virtualgl/VirtualGL/%{version}/VirtualGL-%{version}.tar.gz
 # Use system glx.h
 Patch1:         %{name}-glx.patch
