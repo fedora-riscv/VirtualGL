@@ -11,6 +11,7 @@ Patch2:         %{name}-redhatpathsfix.patch
 Patch3:         %{name}-redhatlibexecpathsfix.patch
 Release:        7%{?dist}
 License:        wxWindows
+BuildRequires: make
 %if 0%{?rhel} == 6
 BuildRequires: cmake28
 %else
