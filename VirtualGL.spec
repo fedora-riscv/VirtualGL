@@ -1,21 +1,21 @@
 Summary:        A toolkit for displaying OpenGL applications to thin clients
 Name:           VirtualGL
-Version:        2.5.2
+Version:        2.6.3
 URL:            http://www.virtualgl.org/
 Source0:        http://downloads.sourceforge.net/project/virtualgl/VirtualGL/%{version}/VirtualGL-%{version}.tar.gz
-# Use system glx.h
-Patch1:         %{name}-glx.patch
 # fix for bz923961
-Patch2:         %{name}-redhatpathsfix.patch
+Patch1:         %{name}-redhatpathsfix.patch
 # fix for bz1088475
-Patch3:         %{name}-redhatlibexecpathsfix.patch
-Release:        7%{?dist}
+Patch2:         %{name}-redhatlibexecpathsfix.patch
+# fix for bz1799136
+Patch3:         %{name}-mesa.patch
+Release:        1%{?dist}
 License:        wxWindows
-BuildRequires: make
-%if 0%{?rhel} == 6
-BuildRequires: cmake28
+BuildRequires:  make
+%if 0%{?rhel} < 8
+BuildRequires:  cmake3
 %else
-BuildRequires: cmake
+BuildRequires:  cmake
 %endif
 BuildRequires:  fltk-devel
 BuildRequires:  openssl-devel
@@ -24,6 +24,11 @@ BuildRequires:  mesa-libGLU-devel
 BuildRequires:  libXv-devel
 BuildRequires:  gcc-c++
 BuildRequires:  xcb-util-keysyms-devel
+BuildRequires:  ocl-icd-devel
+BuildRequires:  libXtst-devel
+%if 0%{?fedora:1} || 0%{?rhel} <= 7
+BuildRequires:  fltk-fluid
+%endif
 Requires:       fltk
 %if 0%{?fedora:1} || 0%{?rhel} >= 7
 Requires:       hostname
@@ -71,18 +76,18 @@ Development headers and libraries for VirtualGL.
 
 %prep
 %setup -q
-%patch1 -p1 -b .glx
-%patch2 -p1 -b .redhatpathfix
-%patch3 -p1 -b .redhatlibexecpathsfix
+%patch1 -p1 -b .redhatpathfix
+%patch2 -p1 -b .redhatlibexecpathsfix
+%patch3 -p1 -b .mesafix
 
 sed -i -e 's,"glx.h",<GL/glx.h>,' server/*.[hc]*
 # Remove bundled libraries
-rm -r common/glx* server/fltk
+rm -r server/fltk
 rm doc/LICENSE-*.txt
 
 %build
-%if 0%{?rhel} == 6
-cmake28 \
+%if 0%{?rhel} == 7
+cmake3 \
 %else
 %cmake \
 %endif
@@ -91,16 +96,27 @@ cmake28 \
          -DVGL_FAKEXCB=1 \
          -DVGL_USESSL=0 \
          -DVGL_BUILDSTATIC=0 \
+         -DVGL_FAKEOPENCL=1 \
+         -DVGL_BUILDSERVER=1 \
+         -DVGL_USEXV=1 \
          -DTJPEG_INCLUDE_DIR=%{_includedir}/ \
          -DTJPEG_LIBRARY=%{_libdir}/libturbojpeg.so \
          -DCMAKE_INSTALL_PREFIX=%{_prefix}/ \
          -DCMAKE_INSTALL_LIBDIR=%{_libdir}/VirtualGL/ \
          -DCMAKE_INSTALL_DOCDIR=%{_docdir}/%{name}/ \
          -DCMAKE_INSTALL_BINDIR=%{_bindir}/ .
+%if 0%{?rhel} == 7
 make %{?_smp_mflags}
+%else
+%cmake_build
+%endif
 
 %install
+%if 0%{?rhel} == 7
 make install DESTDIR=$RPM_BUILD_ROOT
+%else
+%cmake_install
+%endif
 # glxinfo conflicts with command from glx-utils so lets do what Arch does
 # and rename the command
 mv $RPM_BUILD_ROOT/%{_bindir}/glxinfo $RPM_BUILD_ROOT/%{_bindir}/vglxinfo
@@ -146,6 +162,9 @@ mv $RPM_BUILD_ROOT%{_bindir}/.vglrun.vars32 $RPM_BUILD_ROOT%{_libexecdir}/vglrun
 
 
 %changelog
+* Sun Jan 17 2021 Gary Gatling <gsgatlin@ncsu.edu> - 2.6.3-1
+- Update to 2.6.3
+
 * Sat Aug 01 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2.5.2-7
 - Second attempt - Rebuilt for
   https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
