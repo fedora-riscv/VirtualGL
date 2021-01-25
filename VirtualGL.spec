@@ -9,7 +9,7 @@ Patch1:         %{name}-redhatpathsfix.patch
 Patch2:         %{name}-redhatlibexecpathsfix.patch
 # fix for bz1799136
 Patch3:         %{name}-mesa.patch
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        wxWindows
 BuildRequires:  make
 %if 0%{?rhel} < 8
@@ -162,6 +162,9 @@ mv $RPM_BUILD_ROOT%{_bindir}/.vglrun.vars32 $RPM_BUILD_ROOT%{_libexecdir}/vglrun
 
 
 %changelog
+* Mon Jan 25 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.6.3-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
 * Sun Jan 17 2021 Gary Gatling <gsgatlin@ncsu.edu> - 2.6.3-1
 - Update to 2.6.3
 
