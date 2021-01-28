@@ -1,15 +1,13 @@
 Summary:        A toolkit for displaying OpenGL applications to thin clients
 Name:           VirtualGL
-Version:        2.6.3
+Version:        2.6.5
 URL:            http://www.virtualgl.org/
 Source0:        http://downloads.sourceforge.net/project/virtualgl/VirtualGL/%{version}/VirtualGL-%{version}.tar.gz
 # fix for bz923961
 Patch1:         %{name}-redhatpathsfix.patch
 # fix for bz1088475
 Patch2:         %{name}-redhatlibexecpathsfix.patch
-# fix for bz1799136
-Patch3:         %{name}-mesa.patch
-Release:        2%{?dist}
+Release:        1%{?dist}
 License:        wxWindows
 BuildRequires:  make
 %if 0%{?rhel} < 8
@@ -78,7 +76,6 @@ Development headers and libraries for VirtualGL.
 %setup -q
 %patch1 -p1 -b .redhatpathfix
 %patch2 -p1 -b .redhatlibexecpathsfix
-%patch3 -p1 -b .mesafix
 
 sed -i -e 's,"glx.h",<GL/glx.h>,' server/*.[hc]*
 # Remove bundled libraries
@@ -162,6 +159,9 @@ mv $RPM_BUILD_ROOT%{_bindir}/.vglrun.vars32 $RPM_BUILD_ROOT%{_libexecdir}/vglrun
 
 
 %changelog
+* Thu Jan 28 2021 Gary Gatling <gsgatlin@ncsu.edu> - 2.6.5-1
+- Update to 2.6.5
+
 * Mon Jan 25 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.6.3-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
