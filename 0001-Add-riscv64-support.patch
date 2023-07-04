@@ -1,0 +1,24 @@
+From ce6caeab42d29aa449c11b966c595906c5f4b690 Mon Sep 17 00:00:00 2001
+From: Liu Yang <Yang.Liu.sn@gmail.com>
+Date: Tue, 4 Jul 2023 11:52:31 +0800
+Subject: [PATCH] Add riscv64 support.
+
+---
+ include/boost/endian.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/boost/endian.h b/include/boost/endian.h
+index 684950a..567edd7 100644
+--- a/include/boost/endian.h
++++ b/include/boost/endian.h
+@@ -117,6 +117,7 @@
+    || defined(__x86_64) || defined(__x86_64__) \
+    || defined(_M_X64) || defined(__bfin__) \
+    || defined(__ARMEL__) || defined(__aarch64__) \
++   || (defined(__riscv) || defined(__riscv__) && __riscv_xlen == 64) \
+    || (defined(_WIN32) && defined(__ARM__) && defined(_MSC_VER)) /* ARM Windows CE don't define anything reasonably unique, but there are no big-endian Windows versions */
+ 
+ # define BOOST_LITTLE_ENDIAN
+-- 
+2.41.0
+

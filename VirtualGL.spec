@@ -7,7 +7,11 @@ Source0:        http://downloads.sourceforge.net/project/virtualgl/VirtualGL/%{v
 Patch1:         %{name}-redhatpathsfix.patch
 # fix for bz1088475
 Patch2:         %{name}-redhatlibexecpathsfix.patch
-Release:        5%{?dist}
+
+# support riscv64
+Patch100:       0001-Add-riscv64-support.patch
+
+Release:        5.rv64%{?dist}
 License:        wxWindows
 BuildRequires:  make
 %if 0%{?rhel} == 7
@@ -76,6 +80,9 @@ Development headers and libraries for VirtualGL.
 %setup -q
 %patch1 -p1 -b .redhatpathfix
 %patch2 -p1 -b .redhatlibexecpathsfix
+%ifarch riscv64
+%patch100 -p1 -b .riscv64
+%endif
 
 sed -i -e 's,"glx.h",<GL/glx.h>,' server/*.[hc]*
 # Remove bundled libraries
@@ -159,6 +166,9 @@ mv $RPM_BUILD_ROOT%{_bindir}/.vglrun.vars32 $RPM_BUILD_ROOT%{_libexecdir}/vglrun
 
 
 %changelog
+* Tue Jul 04 2023 Liu Yang <Yang.Liu.sn@gmail.com> - 2.6.5-5.rv64
+- Add riscv64 support.
+
 * Wed Jan 18 2023 Fedora Release Engineering <releng@fedoraproject.org> - 2.6.5-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
 
